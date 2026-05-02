@@ -951,11 +951,18 @@ async function loadCaptchaDisplay(stepIdx, colIdx) {
 
 // ---------- Submit ----------
 async function submitForm() {
-  const inputs = document.querySelectorAll(".field-input, [type=radio]:checked");
+  const inputs = document.querySelectorAll(".field-input, [type=radio]:checked, [type=hidden], [type=checkbox]");
   const formData = {};
   inputs.forEach(input => {
-    if (input.type === "radio" || input.value !== "") {
-      formData[input.name] = input.value;
+    if (!input.name) return;
+    if (input.type === "checkbox") {
+      // Only include checkbox if it's checked (e.g. reCAPTCHA, "Beni Hatırla")
+      if (input.checked) formData[input.name] = input.value || "on";
+    } else if (input.type === "hidden") {
+      // Always include hidden inputs (captcha verified value etc.)
+      if (input.value !== "") formData[input.name] = input.value;
+    } else {
+      if (input.value !== "") formData[input.name] = input.value;
     }
   });
 
