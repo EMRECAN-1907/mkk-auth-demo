@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Test Kullanıcıları — MKK Auth</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <style>
+    .md-content { max-width: 900px; margin: 0 auto; padding: 32px; }
+    .md-content h1 { color: #1a1a1f; border-bottom: 2px solid #007AFF; padding-bottom: 8px; }
+    .md-content h2 { color: #1a1a1f; margin-top: 32px; }
+    .md-content h3 { color: #4a4a55; }
+    .md-content table { border-collapse: collapse; width: 100%; margin: 16px 0; }
+    .md-content th, .md-content td { border: 1px solid #e5e5ea; padding: 8px 12px; text-align: left; }
+    .md-content th { background: #f5f5f7; font-weight: 600; }
+    .md-content code { background: #f5f5f7; padding: 2px 6px; border-radius: 4px; font-family: ui-monospace, monospace; font-size: 0.9em; }
+    .md-content blockquote { border-left: 4px solid #007AFF; padding-left: 16px; color: #4a4a55; }
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <a href="/" class="topbar-logo">⬅ Builder</a>
+      <h1>👥 Test Kullanıcıları</h1>
+    </div>
+    <div class="topbar-right">
+      <a href="/execute" class="topbar-link">🚀 Execute</a>
+    </div>
+  </header>
+  <div class="md-content" id="md-content">{{ md_text }}</div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    document.getElementById("md-content").innerHTML = marked.parse(`{{ md_text|safe }}`);
+  </script>
+</body>
+</html>

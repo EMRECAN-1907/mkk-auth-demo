@@ -1,0 +1,48 @@
+{
+  "policyName": "gib_tarzi_alternatif",
+  "displayName": "GİB Tarzı — 5 Alternatif Yöntem",
+  "appLabel": "MKK Genel Giriş",
+  "description": "Kullanıcı 5 farklı giriş yönteminden birini seçer (paralel olarak gösterilen alternatifler)",
+  "sessionMinutes": 30,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": true,
+      "timing": {
+        "mode": "shared",
+        "sharedTimeout": 300
+      },
+      "items": [
+        {
+          "type": "userpass",
+          "config": {
+            "identifierType": "tckn",
+            "inputLabel": "TC Kimlik No",
+            "passwordLabel": "Şifre",
+            "validation": "\\d{11}",
+            "maxRetries": 3
+          }
+        },
+        {
+          "type": "userpass",
+          "config": {
+            "identifierType": "vkn",
+            "inputLabel": "Vergi No",
+            "passwordLabel": "Şifre",
+            "validation": "\\d{10}",
+            "maxRetries": 3
+          }
+        },
+        {
+          "type": "external_idp",
+          "config": {
+            "provider": "edevlet",
+            "redirectUri": "https://mkk.com.tr/cb",
+            "maxRetries": 1
+          }
+        }
+      ],
+      "semantics": "any"
+    }
+  ]
+}

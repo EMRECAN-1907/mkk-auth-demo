@@ -1,0 +1,25 @@
+{
+  "policyName": "edevlet_only",
+  "displayName": "Sadece e-Devlet ile Giriş",
+  "appLabel": "Vatandaş Portali",
+  "description": "Tek tıkla e-Devlet'e yönlendirme — şifre yok",
+  "sessionMinutes": 30,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "external_idp",
+          "config": {
+            "provider": "edevlet",
+            "redirectUri": "https://uygulama.mkk.com.tr/auth/callback",
+            "timeout": 300,
+            "maxRetries": 1
+          }
+        }
+      ]
+    }
+  ]
+}

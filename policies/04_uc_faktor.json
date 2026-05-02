@@ -1,0 +1,56 @@
+{
+  "policyName": "uc_faktor_tam",
+  "displayName": "3 Faktörlü Tam Doğrulama",
+  "appLabel": "Hassas İşlem Portalı",
+  "description": "TCKN+şifre → SMS OTP → Push onay (üç katman)",
+  "sessionMinutes": 15,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "userpass",
+          "config": {
+            "identifierType": "tckn",
+            "inputLabel": "TC Kimlik No",
+            "passwordLabel": "Şifre",
+            "validation": "\\d{11}",
+            "timeout": 120,
+            "maxRetries": 3
+          }
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "sms_oob",
+          "config": {
+            "otpLength": 6,
+            "timeout": 90,
+            "maxRetries": 3
+          }
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "push_approve",
+          "config": {
+            "timeout": 60,
+            "maxRetries": 1
+          }
+        }
+      ]
+    }
+  ]
+}

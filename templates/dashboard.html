@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>e-YATIRIMCI — Hesabım</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" />
+  <style>
+    body { background: #f5f5f7; }
+    .dash-bar {
+      background: linear-gradient(135deg, #A52A2A, #7d1f1f);
+      color: white;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .dash-bar-logo {
+      width: 36px; height: 36px;
+      background: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dash-bar-logo svg { width: 28px; height: 28px; }
+    .dash-bar-title { font-weight: 700; font-size: 16px; flex: 1; }
+    .dash-bar-user {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-size: 13px;
+    }
+    .dash-bar-user-avatar {
+      width: 32px; height: 32px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+    }
+    .dash-logout {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.25);
+      color: white;
+      padding: 6px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 12px;
+    }
+    .dash-logout:hover { background: rgba(255,255,255,0.25); }
+
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      min-height: calc(100vh - 60px);
+    }
+    .dash-side {
+      background: white;
+      border-right: 1px solid var(--border);
+      padding: 20px 0;
+    }
+    .dash-side-item {
+      padding: 12px 24px;
+      cursor: pointer;
+      font-size: 14px;
+      color: var(--ey-dark);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: background 0.15s;
+    }
+    .dash-side-item:hover { background: rgba(0,0,0,0.04); }
+    .dash-side-item.active {
+      background: rgba(165, 42, 42, 0.08);
+      color: var(--ey-red);
+      border-left: 3px solid var(--ey-red);
+      padding-left: 21px;
+      font-weight: 600;
+    }
+    .dash-side-icon { font-size: 18px; }
+
+    .dash-main {
+      padding: 24px;
+      max-width: 1100px;
+    }
+    .dash-welcome {
+      background: white;
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .dash-welcome h1 {
+      font-size: 22px;
+      color: var(--ey-dark);
+      margin-bottom: 4px;
+    }
+    .dash-welcome-sub {
+      font-size: 13px;
+      color: var(--ey-gray);
+    }
+    .dash-welcome-meta {
+      display: flex;
+      gap: 24px;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid var(--border);
+      font-size: 12px;
+    }
+    .dash-meta-item {
+      color: var(--ey-gray);
+    }
+    .dash-meta-item strong {
+      color: var(--ey-dark);
+      display: block;
+      font-size: 14px;
+      margin-top: 2px;
+    }
+
+    .dash-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .dash-card {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .dash-card h3 {
+      font-size: 12px;
+      color: var(--ey-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 8px;
+    }
+    .dash-card-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--ey-dark);
+    }
+    .dash-card-trend {
+      font-size: 12px;
+      margin-top: 4px;
+    }
+    .dash-card-trend.up { color: var(--apple-green); }
+    .dash-card-trend.down { color: var(--apple-red); }
+
+    .dash-section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+    }
+    .dash-section h2 {
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 16px;
+      color: var(--ey-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .dash-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+    }
+    .dash-table th, .dash-table td {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    .dash-table th {
+      font-size: 11px;
+      color: var(--ey-gray);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+    .dash-table tr:last-child td { border-bottom: none; }
+    .dash-table .num { text-align: right; font-family: ui-monospace, monospace; }
+    .dash-positive { color: var(--apple-green); }
+    .dash-negative { color: var(--apple-red); }
+
+    .demo-banner {
+      background: linear-gradient(90deg, rgba(255,149,0,0.1), rgba(255,149,0,0.05));
+      border: 1px solid rgba(255,149,0,0.3);
+      color: #8a4d00;
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <header class="dash-bar">
+    <div class="dash-bar-logo">
+      <svg viewBox="0 0 48 48"><circle cx="24" cy="24" r="22" fill="white"/>
+        <path d="M14 32 L14 22 L20 22 M14 22 L20 16 L20 28 M28 32 L28 16 L34 16 L34 22 L28 22 M28 22 L34 28 L34 32"
+              stroke="#A52A2A" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+      </svg>
+    </div>
+    <div class="dash-bar-title">e-YATIRIMCI</div>
+    <div class="dash-bar-user">
+      <span id="user-name">Yükleniyor...</span>
+      <div class="dash-bar-user-avatar" id="user-initial">?</div>
+      <button class="dash-logout" onclick="window.location.href='/execute'">⏻ Çıkış</button>
+    </div>
+  </header>
+
+  <div class="dash-grid">
+    <!-- Sol menü -->
+    <aside class="dash-side">
+      <div class="dash-side-item active"><span class="dash-side-icon">🏠</span>Ana Sayfa</div>
+      <div class="dash-side-item"><span class="dash-side-icon">💼</span>Portföyüm</div>
+      <div class="dash-side-item"><span class="dash-side-icon">📊</span>Hesap Hareketleri</div>
+      <div class="dash-side-item"><span class="dash-side-icon">🔒</span>Yatırımcı Blokajı</div>
+      <div class="dash-side-item"><span class="dash-side-icon">📑</span>Bildirimler</div>
+      <div class="dash-side-item"><span class="dash-side-icon">📞</span>Talep ve Şikayet</div>
+      <div class="dash-side-item"><span class="dash-side-icon">⚙</span>Ayarlar</div>
+    </aside>
+
+    <!-- Ana içerik -->
+    <main class="dash-main">
+      <div class="demo-banner">
+        ⚠ <strong>DEMO ORTAMI</strong> · Bu sahte bir e-Yatırımcı sayfasıdır. Gerçek MKK servisi değildir, gerçek veri içermez.
+      </div>
+
+      <!-- Welcome card -->
+      <div class="dash-welcome">
+        <h1>Hoş geldiniz, <span id="welcome-name">Yatırımcı</span>!</h1>
+        <div class="dash-welcome-sub">MKK kayıtlarınıza güvenli giriş yaptınız.</div>
+        <div class="dash-welcome-meta">
+          <div class="dash-meta-item">Son giriş tarihi <strong id="login-date"></strong></div>
+          <div class="dash-meta-item">Doğrulama yöntemi <strong id="auth-method">—</strong></div>
+          <div class="dash-meta-item">Session ID <strong id="session-id" style="font-family:monospace;font-size:11px;">—</strong></div>
+        </div>
+      </div>
+
+      <!-- Summary cards -->
+      <div class="dash-cards">
+        <div class="dash-card">
+          <h3>Portföy Değeri</h3>
+          <div class="dash-card-value">₺ 1,254,832</div>
+          <div class="dash-card-trend up">↑ %2.3 (bugün)</div>
+        </div>
+        <div class="dash-card">
+          <h3>Toplam Hisse</h3>
+          <div class="dash-card-value">14 farklı</div>
+          <div class="dash-card-trend">3 BIST 30, 11 BIST 100</div>
+        </div>
+        <div class="dash-card">
+          <h3>Bekleyen İşlem</h3>
+          <div class="dash-card-value">2</div>
+          <div class="dash-card-trend">Onay bekliyor</div>
+        </div>
+        <div class="dash-card">
+          <h3>Bildirim</h3>
+          <div class="dash-card-value">5</div>
+          <div class="dash-card-trend up">Yeni okunmamış</div>
+        </div>
+      </div>
+
+      <!-- Holdings table -->
+      <div class="dash-section">
+        <h2>📈 Portföyüm</h2>
+        <table class="dash-table">
+          <thead>
+            <tr>
+              <th>Hisse</th>
+              <th>Adet</th>
+              <th class="num">Maliyet</th>
+              <th class="num">Güncel Fiyat</th>
+              <th class="num">Toplam Değer</th>
+              <th class="num">Kar/Zarar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>THYAO</strong> <span style="color:#999;font-size:11px;">Türk Hava Yolları</span></td>
+              <td>1,500</td>
+              <td class="num">₺ 295.20</td>
+              <td class="num">₺ 312.50</td>
+              <td class="num">₺ 468,750</td>
+              <td class="num dash-positive">+₺ 25,950</td>
+            </tr>
+            <tr>
+              <td><strong>GARAN</strong> <span style="color:#999;font-size:11px;">Garanti Bankası</span></td>
+              <td>800</td>
+              <td class="num">₺ 138.40</td>
+              <td class="num">₺ 142.80</td>
+              <td class="num">₺ 114,240</td>
+              <td class="num dash-positive">+₺ 3,520</td>
+            </tr>
+            <tr>
+              <td><strong>ASELS</strong> <span style="color:#999;font-size:11px;">Aselsan</span></td>
+              <td>2,200</td>
+              <td class="num">₺ 87.10</td>
+              <td class="num">₺ 91.45</td>
+              <td class="num">₺ 201,190</td>
+              <td class="num dash-positive">+₺ 9,570</td>
+            </tr>
+            <tr>
+              <td><strong>SISE</strong> <span style="color:#999;font-size:11px;">Şişecam</span></td>
+              <td>3,500</td>
+              <td class="num">₺ 49.20</td>
+              <td class="num">₺ 47.80</td>
+              <td class="num">₺ 167,300</td>
+              <td class="num dash-negative">-₺ 4,900</td>
+            </tr>
+            <tr>
+              <td><strong>BIMAS</strong> <span style="color:#999;font-size:11px;">BİM</span></td>
+              <td>450</td>
+              <td class="num">₺ 524.00</td>
+              <td class="num">₺ 558.50</td>
+              <td class="num">₺ 251,325</td>
+              <td class="num dash-positive">+₺ 15,525</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Recent activity -->
+      <div class="dash-section">
+        <h2>🔔 Son Bildirimler</h2>
+        <table class="dash-table">
+          <tbody>
+            <tr>
+              <td style="width:80px;color:#999;font-size:11px;">Bugün<br>14:23</td>
+              <td><strong>Temettü ödemesi</strong><br><span style="color:#666;font-size:12px;">GARAN'dan ₺ 1,440 hesabınıza yatırıldı</span></td>
+            </tr>
+            <tr>
+              <td style="width:80px;color:#999;font-size:11px;">Bugün<br>10:15</td>
+              <td><strong>Sermaye artırımı</strong><br><span style="color:#666;font-size:12px;">SISE bedelsiz hisse senedi dağıtım kararı yayımlandı</span></td>
+            </tr>
+            <tr>
+              <td style="width:80px;color:#999;font-size:11px;">Dün<br>16:00</td>
+              <td><strong>Genel kurul</strong><br><span style="color:#666;font-size:12px;">THYAO 2026 yılı olağan genel kurul daveti</span></td>
+            </tr>
+            <tr>
+              <td style="width:80px;color:#999;font-size:11px;">2 gün önce</td>
+              <td><strong>Blokaj kaldırma onayı</strong><br><span style="color:#666;font-size:12px;">Talep ettiğiniz blokaj kaldırma işlemi tamamlandı</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    // Login sonrası gelen kullanıcı bilgilerini al ve doldur
+    const params = new URLSearchParams(window.location.search);
+    const userName = params.get("user") || sessionStorage.getItem("dash_user") || "Demo Yatırımcı";
+    const userId = params.get("id") || sessionStorage.getItem("dash_id") || "—";
+    const authMethod = params.get("auth") || sessionStorage.getItem("dash_auth") || "Çoklu faktör";
+    const sid = params.get("sid") || sessionStorage.getItem("dash_sid") || "—";
+
+    sessionStorage.setItem("dash_user", userName);
+    sessionStorage.setItem("dash_id", userId);
+    sessionStorage.setItem("dash_auth", authMethod);
+    sessionStorage.setItem("dash_sid", sid);
+
+    document.getElementById("user-name").textContent = userName;
+    document.getElementById("welcome-name").textContent = userName;
+    document.getElementById("user-initial").textContent = userName.charAt(0).toUpperCase();
+    document.getElementById("auth-method").textContent = authMethod;
+    document.getElementById("session-id").textContent = sid.length > 12 ? sid.substring(0,12)+"…" : sid;
+
+    const now = new Date();
+    document.getElementById("login-date").textContent = now.toLocaleDateString("tr-TR") + " " + now.toLocaleTimeString("tr-TR", {hour:"2-digit", minute:"2-digit"});
+  </script>
+</body>
+</html>

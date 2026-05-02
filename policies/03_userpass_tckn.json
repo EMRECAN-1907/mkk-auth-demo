@@ -1,0 +1,27 @@
+{
+  "policyName": "userpass_tckn",
+  "displayName": "TCKN + Şifre Girişi",
+  "appLabel": "Bireysel Yatırımcı Portalı",
+  "description": "TCKN + şifre ile tek adımlık giriş",
+  "sessionMinutes": 30,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "userpass",
+          "config": {
+            "identifierType": "tckn",
+            "inputLabel": "TC Kimlik No",
+            "passwordLabel": "Şifre",
+            "validation": "\\d{11}",
+            "timeout": 120,
+            "maxRetries": 3
+          }
+        }
+      ]
+    }
+  ]
+}

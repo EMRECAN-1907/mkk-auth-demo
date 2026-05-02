@@ -1,0 +1,50 @@
+{
+  "policyName": "enabiz_alternatif",
+  "displayName": "e-Nabız Tarzı (TCKN+Şifre veya e-Devlet veya e-İmza)",
+  "appLabel": "Çoklu Giriş Yöntemi",
+  "description": "Kullanıcı 3 alternatif giriş yönteminden birini seçer: TCKN+Şifre, e-Devlet üzerinden veya e-İmza ile. e-Nabız ve benzeri kamu uygulamalarında kullanılan klasik desen.",
+  "owner": "Demo",
+  "tag": "demo",
+  "appColor": "blue",
+  "sessionMinutes": 30,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": true,
+      "semantics": "any",
+      "timing": {"mode": "perStage"},
+      "items": [
+        {
+          "type": "userpass",
+          "config": {
+            "identifierType": "tckn",
+            "inputLabel": "T.C. Kimlik Numarası",
+            "passwordLabel": "e-Nabız Şifresi",
+            "timeout": 180,
+            "maxRetries": 3
+          }
+        },
+        {
+          "type": "external_idp",
+          "config": {
+            "provider": "edevlet",
+            "redirectUrl": "https://giris.turkiye.gov.tr/oauth2/authorize",
+            "timeout": 300,
+            "maxRetries": 3
+          }
+        },
+        {
+          "type": "esign",
+          "config": {
+            "timeout": 240,
+            "maxRetries": 3
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "generatedBy": "MKK Flow Builder",
+    "scenario": "e-nabiz-style-multi-option-login"
+  }
+}

@@ -1,0 +1,40 @@
+{
+  "policyName": "captcha_userpass",
+  "displayName": "Captcha Korumalı Giriş",
+  "appLabel": "Kurumsal İç Portal",
+  "description": "Önce image captcha, sonra LDAP girişi",
+  "sessionMinutes": 30,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "image_captcha",
+          "config": {
+            "length": 5,
+            "caseSensitive": false,
+            "timeout": 60,
+            "maxRetries": 3
+          }
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "ldap",
+          "config": {
+            "inputLabel": "Kullanıcı adı",
+            "timeout": 120,
+            "maxRetries": 3
+          }
+        }
+      ]
+    }
+  ]
+}

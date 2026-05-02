@@ -1,0 +1,59 @@
+{
+  "policyName": "true_branching",
+  "displayName": "Gerçek Branching — TCKN→SMS+Email | e-Devlet Tek",
+  "appLabel": "Akıllı Çatallanma v2",
+  "description": "İç içe alternatif: TCKN seçilirse içinde SMS+Email sub-step çalışır. e-Devlet seçilirse tek adımda biter. Bu, e-Nabız tarzı gerçek branching.",
+  "owner": "Demo",
+  "tag": "demo",
+  "appColor": "blue",
+  "sessionMinutes": 30,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": true,
+      "semantics": "any",
+      "timing": {"mode": "perStage"},
+      "items": [
+        {
+          "type": "tckn_standalone",
+          "config": {
+            "inputLabel": "T.C. Kimlik No",
+            "validation": "\\d{11}",
+            "timeout": 120,
+            "maxRetries": 3
+          },
+          "subSteps": [
+            {
+              "items": [
+                {
+                  "type": "sms_oob",
+                  "config": {"otpLength": 6, "timeout": 120, "maxRetries": 3}
+                }
+              ]
+            },
+            {
+              "items": [
+                {
+                  "type": "email_oob",
+                  "config": {"otpLength": 6, "timeout": 180, "maxRetries": 3}
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "external_idp",
+          "config": {
+            "provider": "edevlet",
+            "redirectUrl": "https://giris.turkiye.gov.tr/oauth2/authorize",
+            "timeout": 300
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "generatedBy": "MKK Flow Builder",
+    "scenario": "true nested branching: TCKN has sub-flow, e-Devlet doesn't"
+  }
+}

@@ -1,0 +1,69 @@
+{
+  "policyName": "branching_enabiz",
+  "displayName": "Branching Demo — e-Devlet veya TCKN+Şifre+OOB",
+  "appLabel": "Akıllı Çatallanma",
+  "description": "Kullanıcı 2 yoldan biriyle giriş yapar: (1) e-Devlet üzerinden tek adımda, veya (2) TCKN+Şifre + SMS/Email kodları. e-Devlet seçilirse SMS/Email atlanır (skipIfNoRecipient).",
+  "owner": "Demo",
+  "tag": "demo",
+  "appColor": "blue",
+  "sessionMinutes": 30,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": true,
+      "semantics": "any",
+      "timing": {"mode": "perStage"},
+      "items": [
+        {
+          "type": "userpass",
+          "config": {
+            "identifierType": "tckn",
+            "inputLabel": "T.C. Kimlik No",
+            "passwordLabel": "Şifre",
+            "timeout": 180,
+            "maxRetries": 3
+          }
+        },
+        {
+          "type": "external_idp",
+          "config": {
+            "provider": "edevlet",
+            "redirectUrl": "https://giris.turkiye.gov.tr/oauth2/authorize",
+            "timeout": 300,
+            "maxRetries": 3
+          }
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "parallel": true,
+      "semantics": "all",
+      "timing": {"mode": "perStage"},
+      "items": [
+        {
+          "type": "sms_oob",
+          "config": {
+            "otpLength": 6,
+            "timeout": 120,
+            "maxRetries": 3,
+            "skipIfNoRecipient": true
+          }
+        },
+        {
+          "type": "email_oob",
+          "config": {
+            "otpLength": 6,
+            "timeout": 180,
+            "maxRetries": 3,
+            "skipIfNoRecipient": true
+          }
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "generatedBy": "MKK Flow Builder",
+    "scenario": "branching: e-Devlet skips OOB, TCKN+Şifre requires OOB"
+  }
+}

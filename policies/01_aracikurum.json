@@ -1,0 +1,57 @@
+{
+  "policyName": "aracikurum_classic",
+  "displayName": "Aracı Kurum Klasik",
+  "appLabel": "MKK Aracı Kurum",
+  "description": "MERSIS sorgu → temsilci seç → SMS OTP",
+  "sessionMinutes": 30,
+  "stages": [
+    {
+      "step": 1,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "mersis_lookup",
+          "config": {
+            "inputField": "mersis",
+            "inputLabel": "MERSIS Numarası",
+            "validation": "\\d{16}",
+            "timeout": 180,
+            "maxRetries": 3
+          }
+        }
+      ]
+    },
+    {
+      "step": 2,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "representative_select",
+          "config": {
+            "autoSkipIfSingle": true,
+            "timeout": 120,
+            "maxRetries": 3
+          }
+        }
+      ]
+    },
+    {
+      "step": 3,
+      "parallel": false,
+      "timing": { "mode": "perStage" },
+      "items": [
+        {
+          "type": "sms_oob",
+          "config": {
+            "otpLength": 6,
+            "timeout": 120,
+            "maxRetries": 3,
+            "gateway": "netgsm"
+          }
+        }
+      ]
+    }
+  ]
+}
